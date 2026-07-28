@@ -102,6 +102,38 @@ button.azione:hover{background:var(--blu2)}
 
 /* ---------- pannelli enigma / taccuino ---------- */
 .card.largo{max-width:760px;width:min(94vw,760px)}
+
+/* L'enigma non è una scheda: è l'oggetto che si apre.
+   Il pannello prende la forma del libro, del raccoglitore o dello strumento. */
+#enigma .card{position:relative;transition:none}
+.card.ogg-libro,.card.ogg-atlante,.card.ogg-quaderno{
+  background:linear-gradient(90deg,#efeade 0%,#f7f4ec 46%,#e2dccd 50%,#f7f4ec 54%,#efeade 100%);
+  border-top:none;border-radius:6px 14px 14px 6px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5), inset 0 0 0 1px rgba(0,0,0,.06);
+  padding-left:52px;padding-right:52px}
+.card.ogg-libro::before,.card.ogg-atlante::before,.card.ogg-quaderno::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:26px;border-radius:6px 0 0 6px;
+  background:linear-gradient(90deg,var(--dorso,#9a4a48),rgba(0,0,0,.25))}
+.card.ogg-libro::after,.card.ogg-atlante::after,.card.ogg-quaderno::after{
+  content:"";position:absolute;left:50%;top:14px;bottom:14px;width:20px;margin-left:-10px;
+  background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.10) 45%,rgba(0,0,0,.13) 50%,rgba(0,0,0,.10) 55%,rgba(0,0,0,0));
+  pointer-events:none}
+.card.ogg-quaderno{background:
+  repeating-linear-gradient(180deg,#fbfaf5 0 27px,#e9eef4 27px 28px);
+  border-radius:4px 12px 12px 4px}
+.card.ogg-raccoglitore,.card.ogg-fascicolo{
+  background:#f5f2ea;border-top:14px solid var(--dorso,#8f6350);border-radius:4px 12px 12px 4px;
+  padding-left:56px}
+.card.ogg-raccoglitore::before,.card.ogg-fascicolo::before{
+  content:"";position:absolute;left:22px;top:64px;bottom:64px;width:11px;border-radius:6px;
+  background:repeating-linear-gradient(180deg,#b9c0c9 0 15px,transparent 15px 46px)}
+.card.ogg-scatola{
+  background:linear-gradient(180deg,#e8dcc4 0%,#f4efe2 12%,#f6f3ea 100%);
+  border-top:16px solid var(--dorso,#b0603a);border-radius:4px}
+.card.ogg-scatola::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:16px;
+  background:repeating-linear-gradient(90deg,rgba(0,0,0,.10) 0 22px,transparent 22px 44px)}
+#enigma .card>*{position:relative;z-index:1}
 .materia{display:flex;align-items:center;gap:12px;margin-bottom:4px}
 .materia svg{flex:0 0 auto}
 .materia .mt{font-family:var(--head);font-size:12.5px;font-weight:700;letter-spacing:1.4px;
@@ -1620,7 +1652,7 @@ M_('italiano','Italiano',r=>{
   const c=pescaCoppie(P_ITALIANO,3,r);
   let ver=null;
   return {titolo:'Il libro con le etichette staccate',
-    consegna:'Dentro il fascicolo c\'è un libro a cui si sono staccate le etichette del frontespizio. Rimetti ogni opera accanto al suo autore.',
+    consegna:'Il libro si apre sul frontespizio: le etichette con i titoli e quelle con gli autori si sono staccate tutte insieme. Rimetti ogni opera accanto a chi l\'ha scritta.',
     cifra:c[0][1].split(' ').pop().length%10,
     corpo(root){ver=wAbbina(root,c,r,'OPERA','AUTORE');},
     verifica(){return ver&&ver();},
@@ -1822,7 +1854,7 @@ M_('scienze','Scienze',r=>{
   const opz=[VETRINI[giusto].n,...altri.map(k=>VETRINI[k].n)];
   let ver=null,ing=1,cv=null;
   return {titolo:'Il vetrino sotto il microscopio',
-    consegna:'Nel fascicolo di scienze c\'è un vetrino senza etichetta. Mettilo sotto il microscopio del laboratorio: a basso ingrandimento si vede poco, <b>alza gli ingrandimenti</b> finché non riconosci che cos\'è.',
+    consegna:'La scatola contiene un vetrino senza etichetta e il microscopio del laboratorio è lì accanto. Mettilo sotto l\'obiettivo: a basso ingrandimento si vede poco, <b>alza gli ingrandimenti</b> finché non riconosci che cos\'è.',
     cifra:VETRINI[giusto].n.replace(/[^A-Za-zÀ-ú]/g,'').length%10,
     corpo(root){
       const w=el('<div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap"></div>');
@@ -2193,6 +2225,11 @@ function nomeMateria(id){return MATERIE.find(m=>m.id===id).nome;}
 function apriEnigma(id){
   const m=MATERIE.find(x=>x.id===id), g=S.enigmi[id];
   S.attivo=id;
+  // il pannello prende l'aspetto dell'oggetto che si sta aprendo
+  const tipo=id==='informatica'?'schermo':TIPO_OGGETTO[id];
+  const card=$('enigma').querySelector('.card');
+  card.className='card largo ogg-'+tipo;
+  card.style.setProperty('--dorso','#'+('000000'+TINTA_MATERIA[id].toString(16)).slice(-6));
   $('enMateria').innerHTML=icona(id)+'<span class="mt">'+m.nome+'</span>';
   $('enTitolo').textContent=g.titolo;
   $('enConsegna').innerHTML=g.consegna;

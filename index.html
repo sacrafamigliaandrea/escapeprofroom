@@ -26,13 +26,23 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:var(--body);fo
 #mirino::before{left:6px;top:0;width:2px;height:14px}
 #mirino::after{left:0;top:6px;width:14px;height:2px}
 #mirino.attivo::before,#mirino.attivo::after{background:var(--ambra)}
+#splash{position:fixed;left:50%;top:19%;transform:translateX(-50%);z-index:9;display:none;
+  background:rgba(10,22,50,.9);padding:12px 24px;border-radius:12px;font-family:var(--head);
+  font-size:16px;color:var(--ambra);border:1px solid rgba(255,210,138,.5);text-align:center;
+  max-width:min(72vw,560px);line-height:1.45}
 #hint{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);z-index:9;display:none;
   background:rgba(10,22,50,.82);color:#fff;padding:9px 18px;border-radius:999px;
   font-family:var(--head);font-size:15.5px;letter-spacing:.2px;border:1px solid rgba(255,210,138,.55);white-space:nowrap}
 #btnAiuto{position:fixed;right:18px;top:16px;z-index:9;display:none;background:rgba(10,22,50,.82);color:#fff;
-  border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:8px 16px;font-family:var(--head);
-  font-size:14px;cursor:pointer;letter-spacing:.3px}
+  border:1px solid rgba(255,255,255,.25);border-radius:50%;width:38px;height:38px;padding:0;
+  font-family:var(--head);font-size:19px;font-weight:700;font-style:italic;cursor:pointer;line-height:1}
 #btnAiuto:hover{background:rgba(18,62,144,.92)}
+.card h3.sez{font-family:var(--head);font-size:13px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;
+  color:var(--gold);margin:18px 0 8px}
+.card h3.sez:first-of-type{margin-top:10px}
+ul.regole{margin:0;padding-left:20px;font-size:16px;line-height:1.55}
+ul.regole li{margin-bottom:7px}
+ul.regole li::marker{color:var(--blu2)}
 
 /* ---------- brand pill (schermo intero → angolo basso-sinistra) ----------
    Solo wordmark: nessun emblema figurativo (vedi GESTIONE-LOGO.md). */
@@ -160,6 +170,7 @@ input.txt{width:260px}
 <div id="yt"></div>
 <div id="mirino"></div>
 <div id="hint"></div>
+<div id="splash"></div>
 
 <div id="barra">
   <div class="voce" id="tempo">
@@ -180,7 +191,7 @@ input.txt{width:260px}
 <div id="seedBox"></div>
 <button id="btnTacc" type="button">Taccuino [T]</button>
 
-<button id="btnAiuto" type="button">Comandi</button>
+<button id="btnAiuto" type="button" title="Come si gioca" aria-label="Come si gioca">i</button>
 
 <div class="brand-fixed" id="brandPill">
   <div class="brand">
@@ -212,20 +223,8 @@ input.txt{width:260px}
     libri e scatole, nei cassetti e negli armadi. Non c'è un ordine: <b>comincia da dove capita</b>.
     Ogni indizio che risolvi, però, lascia una nota a matita che dice dove cercare il prossimo:
     seguire le note costa molto meno tempo che aprire ogni cassetto.</p>
-    <div class="consegna">
-      <b>Attenzione al tempo</b>
-      Hai quindici minuti e aprire un contenitore ne costa dodici secondi: non basta per
-      guardare ovunque. Ogni tentativo sbagliato su un enigma costa altri quindici secondi.
-      La partita ha un codice: con lo stesso codice, la stanza nasconde gli stessi indizi.
-    </div>
-    <div class="comandi">
-      <div><span><span class="kbd">W</span><span class="kbd">A</span><span class="kbd">S</span><span class="kbd">D</span></span><span>o frecce — cammina</span></div>
-      <div><span class="kbd">Mouse</span><span>— guarda intorno</span></div>
-      <div><span><span class="kbd">Clic</span> o <span class="kbd">Invio</span></span><span>— apri cassetti e ante</span></div>
-      <div><span class="kbd">Shift</span><span>— cammina più veloce</span></div>
-      <div><span class="kbd">Esc</span><span>— libera il mouse</span></div>
-      <div><span>Su tablet: joystick + trascina per guardare</span></div>
-    </div>
+    <p style="font-size:15.5px;color:var(--muted)">Comandi e regole sono sempre a portata di mano:
+    il pulsante <b>i</b> in alto a destra.</p>
     <div class="btnrow"><button class="azione" id="btnStart" type="button">Entra nella sala</button></div>
   </div>
 </div>
@@ -289,19 +288,32 @@ input.txt{width:260px}
   </div>
 </div>
 
-<!-- ============ AIUTO ============ -->
+<!-- ============ ISTRUZIONI ============ -->
 <div class="overlay" id="aiuto" style="display:none">
-  <div class="card">
-    <h2>Comandi</h2>
+  <div class="card largo">
+    <h2>Come si gioca</h2>
+    <h3 class="sez">I comandi</h3>
     <div class="comandi">
       <div><span><span class="kbd">W</span><span class="kbd">A</span><span class="kbd">S</span><span class="kbd">D</span></span><span>o frecce — cammina</span></div>
       <div><span class="kbd">Mouse</span><span>— guarda intorno</span></div>
       <div><span><span class="kbd">Clic</span> o <span class="kbd">Invio</span></span><span>— apri cassetti e ante</span></div>
       <div><span class="kbd">Shift</span><span>— cammina più veloce</span></div>
+      <div><span class="kbd">T</span><span>— apri il taccuino</span></div>
       <div><span class="kbd">Esc</span><span>— libera il mouse</span></div>
+      <div><span>Su tablet: joystick a sinistra, trascina per guardare, pulsante APRI per aprire.</span></div>
       <div><span>Punta il mirino su un cassetto o su un'anta: quando diventa ambra, puoi aprirlo.</span></div>
     </div>
-    <div class="btnrow"><button class="azione" id="btnChiudiAiuto" type="button">Torna al tour</button></div>
+    <h3 class="sez">Le regole</h3>
+    <ul class="regole">
+      <li>Hai <b>quindici minuti</b>. Il tempo scorre anche se stai fermo.</li>
+      <li>Aprire un contenitore costa <b>dodici secondi</b>: non bastano per guardare ovunque, quindi conviene scegliere dove cercare.</li>
+      <li>Ogni tentativo sbagliato su un enigma costa <b>quindici secondi</b>.</li>
+      <li>Ogni materia risolta consegna <b>una cifra</b> del codice e una nota che dice dove cercare il prossimo indizio: seguire le note costa molto meno che aprire a caso.</li>
+      <li>Il <b>taccuino</b> tiene il conto delle cifre trovate e dei nascondigli che conosci.</li>
+      <li>Quando hai tutte e dodici le cifre, torna alla porta e usa il tastierino.</li>
+      <li>In basso a destra c'è il <b>codice della partita</b>: con lo stesso codice la stanza nasconde gli stessi indizi, così tutta la classe può giocare la stessa partita.</li>
+    </ul>
+    <div class="btnrow"><button class="azione" id="btnChiudiAiuto" type="button">Torna alla sala</button></div>
   </div>
 </div>
 
@@ -410,6 +422,14 @@ const texLegnoTavolo=(()=>{const c=mkCanvas(512,512),g=c.getContext('2d');
     g.lineWidth=0.7+Math.random()*2.0;const y=Math.random()*512;
     g.beginPath();g.moveTo(0,y);g.bezierCurveTo(170,y+(Math.random()*6-3),340,y+(Math.random()*6-3),512,y);g.stroke();}
   const t=tex(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1.1,4);return t;})();
+
+/* Doghe della tapparella: fessure sottili che lasciano passare un filo di luce. */
+const texTapparella=(()=>{const c=mkCanvas(64,256),g=c.getContext('2d');
+  for(let y=0;y<256;y+=11){
+    g.fillStyle='#5c626b';g.fillRect(0,y,64,9);
+    g.fillStyle='#767d88';g.fillRect(0,y,64,2);
+    g.fillStyle='#33373d';g.fillRect(0,y+9,64,2);}
+  return tex(c);})();
 
 /* Fuori non c'è più il paese: cielo di cenere, sole velato, skyline in rovina. */
 const texFinestra=(()=>{const c=mkCanvas(256,256),g=c.getContext('2d');
@@ -617,7 +637,8 @@ const texMelaLid=(()=>{const c=mkCanvas(64,64);
 const M={
   muroBianco:new THREE.MeshLambertMaterial({color:0xe9e6e0,side:THREE.DoubleSide}),
   muroGrigio:new THREE.MeshLambertMaterial({color:0x878d95,side:THREE.DoubleSide}),
-  pavimento:new THREE.MeshPhongMaterial({map:texPavimento,shininess:26,specular:0x333333}),
+  // gres lucido: riflette i neon e regge l'atmosfera notturna
+  pavimento:new THREE.MeshPhongMaterial({map:texPavimento,shininess:78,specular:0x6a7480,reflectivity:0.4}),
   soffitto:new THREE.MeshLambertMaterial({map:texSoffitto,side:THREE.DoubleSide}),
   fascia:new THREE.MeshLambertMaterial({color:0xf6f5f2}),
   bianco:new THREE.MeshLambertMaterial({color:0xf4f3f0}),
@@ -642,6 +663,58 @@ const M={
   nero:new THREE.MeshLambertMaterial({color:0x101214}),
   dorsi:new THREE.MeshLambertMaterial({map:texDorsi}),
 };
+
+/* ---------- geometrie smussate ----------
+   Uno spigolo perfettamente vivo non esiste in un mobile vero: è la prima cosa
+   che tradisce una scena fatta di scatole. Qui gli spigoli verticali sono
+   raccordati e le facce hanno un bevel minimo che cattura la luce.
+   Le geometrie sono in cache: stessa misura = stessa geometria riusata. */
+const _geoCache={};
+function geoSmussata(w,h,d,r){
+  const k=w.toFixed(3)+'|'+h.toFixed(3)+'|'+d.toFixed(3)+'|'+r.toFixed(3);
+  if(_geoCache[k])return _geoCache[k];
+  const rr=Math.min(r,w/2-0.001,h/2-0.001);
+  const s=new THREE.Shape();
+  const x=-w/2,y=-h/2;
+  s.moveTo(x+rr,y);
+  s.lineTo(x+w-rr,y); s.quadraticCurveTo(x+w,y,x+w,y+rr);
+  s.lineTo(x+w,y+h-rr); s.quadraticCurveTo(x+w,y+h,x+w-rr,y+h);
+  s.lineTo(x+rr,y+h); s.quadraticCurveTo(x,y+h,x,y+h-rr);
+  s.lineTo(x,y+rr); s.quadraticCurveTo(x,y,x+rr,y);
+  const bev=Math.min(0.006,d/4);
+  const g=new THREE.ExtrudeGeometry(s,{depth:d-bev*2,bevelEnabled:true,
+    bevelThickness:bev,bevelSize:bev,bevelSegments:1,curveSegments:2,steps:1});
+  g.translate(0,0,-(d-bev*2)/2-bev);
+  g.computeVertexNormals();
+  _geoCache[k]=g;return g;}
+// box con spigoli raccordati: stessa firma di box()
+function boxS(w,h,d,mat,x,y,z,ry,ombra,r){
+  const m=new THREE.Mesh(geoSmussata(w,h,d,r||0.012),mat);
+  m.position.set(x,y,z); if(ry)m.rotation.y=ry;
+  if(ombra!==false){m.castShadow=true;m.receiveShadow=true;}
+  scene.add(m);return m;}
+function gBoxS(g,w,h,d,mat,x,y,z,rz,ombra,r){
+  const m=new THREE.Mesh(geoSmussata(w,h,d,r||0.012),mat);
+  m.position.set(x,y,z); if(rz)m.rotation.z=rz;
+  if(ombra!==false)m.castShadow=true;
+  g.add(m);return m;}
+
+/* ---------- ombre di contatto ----------
+   La shadow map non regge le ombre corte sotto i mobili: senza un contatto
+   scuro a terra ogni oggetto sembra galleggiare di un centimetro. */
+const texOmbra=(()=>{const c=mkCanvas(128,128),g=c.getContext('2d');
+  const gr=g.createRadialGradient(64,64,4,64,64,62);
+  gr.addColorStop(0,'rgba(0,0,0,.62)');gr.addColorStop(.55,'rgba(0,0,0,.30)');
+  gr.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=gr;g.fillRect(0,0,128,128);
+  return tex(c,false);})();
+const matOmbra=new THREE.MeshBasicMaterial({map:texOmbra,transparent:true,
+  depthWrite:false,opacity:0.85});
+function contatto(x,z,w,d,forza){
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),matOmbra.clone());
+  m.material.opacity=forza===undefined?0.85:forza;
+  m.rotation.x=-Math.PI/2;m.position.set(x,0.008,z);
+  m.renderOrder=1;scene.add(m);return m;}
 
 /* ---------- helper geometrie ---------- */
 function box(w,h,d,mat,x,y,z,ry,ombra){
@@ -678,8 +751,9 @@ const RY={nord:0, sud:Math.PI, ovest:Math.PI/2, est:-Math.PI/2};
    ===================================================================== */
 const APRIBILI=[];      // stato di ogni elemento
 const CLIC=[];          // mesh su cui punta il raycaster
-function registraApribile(mesh,nome,applica){
-  const a={nome,t:0,target:0,applica,uid:mesh.uuid};
+function registraApribile(mesh,nome,applica,deposito){
+  // `deposito` è il punto dentro il mobile dove può comparire un oggetto-indizio
+  const a={nome,t:0,target:0,applica,uid:mesh.uuid,deposito:deposito||null};
   mesh.userData.apr=a;
   APRIBILI.push(a);CLIC.push(mesh);
   return a;}
@@ -737,8 +811,8 @@ function cassetto(parent,fx,fy,wf,hf,d,corsa,seme,nome,extra){
   const dI=d-0.06, hI=hf-0.015;
   const add=(w,h,dd,x,y,z,mat)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,dd),mat);
     m.position.set(x,y,z);g.add(m);return m;};
-  const front=add(wf,hf,0.02,0,0,0,M.biancoLucido);
-  front.castShadow=true;
+  const front=new THREE.Mesh(geoSmussata(wf,hf,0.02,0.008),M.biancoLucido);
+  front.castShadow=true;g.add(front);
   add(wf-0.03,0.012,dI,0,-hI/2+0.02,-dI/2-0.02,M.grigioMobile);          // fondo
   add(0.012,hI-0.04,dI,-wf/2+0.012,0,-dI/2-0.02,M.grigioMobile);         // fianco sx
   add(0.012,hI-0.04,dI, wf/2-0.012,0,-dI/2-0.02,M.grigioMobile);         // fianco dx
@@ -747,21 +821,21 @@ function cassetto(parent,fx,fy,wf,hf,d,corsa,seme,nome,extra){
   const dentro=new THREE.Group();dentro.position.set(0,0,-dI/2-0.02);g.add(dentro);
   if(extra)extra(dentro,-hI/2+0.012);
   else riempiDiCarta(dentro,wf-0.05,dI,-hI/2+0.012,seme,4,hI-0.035);
-  registraApribile(front,nome||'Cassetto',t=>{g.position.z=d/2+0.011+t*corsa;});
+  registraApribile(front,nome||'Cassetto',t=>{g.position.z=d/2+0.011+t*corsa;},dentro);
   return g;}
 
 /* Anta su cardine. cx = posizione del CARDINE; verso = direzione in cui l'anta
    si estende a partire dal cardine (+1 verso destra, -1 verso sinistra).
    Il segno dell'angolo dipende dal verso, altrimenti l'anta ruota nel muro. */
-function anta(parent,cx,cy,w,h,d,verso,seme,nome){
+function anta(parent,cx,cy,w,h,d,verso,seme,nome,deposito){
   const card=new THREE.Group();
   card.position.set(cx,cy,d/2+0.012);parent.add(card);
-  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.035),M.bianco);
+  const m=new THREE.Mesh(geoSmussata(w,h,0.035,0.01),M.bianco);
   m.position.set(verso*w/2,0,0);m.castShadow=true;card.add(m);
   const man=new THREE.Mesh(new THREE.CylinderGeometry(0.011,0.011,0.13,8),M.argento);
   man.position.set(verso*(w-0.06),0,0.03);card.add(man);
   const apMax=-verso*1.55;                      // apre verso l'interno della stanza
-  registraApribile(m,nome||'Anta',t=>{card.rotation.y=t*apMax;});
+  registraApribile(m,nome||'Anta',t=>{card.rotation.y=t*apMax;},deposito||null);
   return card;}
 
 /* ---------- guscio stanza ---------- */
@@ -806,6 +880,13 @@ function finestra(px,pz,w,ry){
   const v=new THREE.Mesh(new THREE.PlaneGeometry(w-0.1,h-0.08),matVetro);
   v.position.set(0,yc,0.005);g.add(v);
   gBox(g,w+0.16,0.05,0.16,M.bianco,0,1.27,0.06,0,false);        // davanzale
+  // tapparella calata a metà: nei video nessuna è mai tirata su del tutto
+  const cala=0.30+((Math.abs(Math.sin(px*7.3+pz*3.1))*0.34));
+  const hT=h*cala;
+  const tp=new THREE.Mesh(new THREE.PlaneGeometry(w-0.08,hT),
+    new THREE.MeshLambertMaterial({map:texTapparella,side:THREE.DoubleSide}));
+  tp.position.set(0,y0+h-hT/2,0.012);g.add(tp);
+  gBox(g,w-0.06,0.022,0.03,M.grigioScuro,0,y0+h-hT,0.014,0,false);   // stecca terminale
   return g;}
 // due sole finestre grandi sulla parete est, col crocifisso in mezzo
 finestra( 2.88,-3.20,1.6,RY.est);
@@ -821,16 +902,30 @@ finestra( 0.90,-4.68,0.95,RY.nord);
   box(0.14,0.05,0.1,M.nero,0.2,2.13,4.6);                        // webcam sopra
   box(0.05,0.16,0.05,M.grigioScuro,0.2,2.05,4.64);
 }
+/* Sedia in polipropilene: scocca con bordi raccordati, seduta leggermente
+   rialzata sul davanti, traversa fra le gambe. */
 function sedia(x,z,ry,mat,ombra){
   const g=gruppo(x,z,ry);
-  const add=(w,h,d,mx,my,mz,rx)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
-    m.position.set(mx,my,mz);if(rx)m.rotation.x=rx;
+  const add=(w,h,d,mx,my,mz,rx,r)=>{
+    const m=new THREE.Mesh(geoSmussata(w,h,d,r||0.014),mat);
+    m.position.set(mx,my,mz);
+    m.rotation.x=-Math.PI/2+(rx||0);               // il piano dell'estrusione diventa orizzontale
     if(ombra!==false)m.castShadow=true;g.add(m);return m;};
-  add(0.42,0.045,0.4,0,0.45,0);                     // seduta
-  add(0.42,0.44,0.038,0,0.70,-0.185,-0.10);         // schienale
+  add(0.42,0.40,0.05,0,0.45,0,0,0.03);             // seduta, spigoli tondi
+  // schienale: pannello smussato inclinato all'indietro
+  const sch=new THREE.Mesh(geoSmussata(0.42,0.44,0.042,0.05),mat);
+  sch.position.set(0,0.70,-0.185);sch.rotation.x=-0.10;
+  if(ombra!==false)sch.castShadow=true;g.add(sch);
+  // montanti che raccordano schienale e seduta
+  for(const mx of[-0.19,0.19]){
+    const m=new THREE.Mesh(new THREE.BoxGeometry(0.032,0.20,0.034),mat);
+    m.position.set(mx,0.55,-0.16);m.rotation.x=-0.10;g.add(m);}
   for(const[lx,lz]of[[-0.17,-0.16],[0.17,-0.16],[-0.17,0.16],[0.17,0.16]]){
-    const m=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.016,0.45,8),mat);
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(0.021,0.015,0.45,10),mat);
     m.position.set(lx,0.225,lz);m.castShadow=true;g.add(m);}
+  // traversa di irrigidimento fra le gambe anteriori
+  const tr=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.34,8),mat);
+  tr.rotation.z=Math.PI/2;tr.position.set(0,0.16,0.16);g.add(tr);
   return g;}
 function pilaSedie(x,z,ry,mat,n){for(let i=0;i<n;i++){const s=sedia(x,z,ry,mat,i===0);s.position.y=i*0.13;}}
 // le sedie di riserva stanno fra il televisore e l'angolo sud-ovest
@@ -1063,9 +1158,9 @@ scaffaleBasso(-3.40,-1.30,-2.70,RY.ovest,true);
     cr(0.05,0.16);cr(0.16,0.05);
     const ser=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.02,0.02),M.grigioScuro);
     ser.position.set(0.38,-0.12,0.016);card.add(ser);
-    registraApribile(sp,'Cassetta di primo soccorso',t=>{card.rotation.y=-t*1.5;});
     const dentro=new THREE.Group();dentro.position.set(0,1.62,-0.01);g.add(dentro);
     riempiDiCarta(dentro,0.34,0.12,0,77,3);
+    registraApribile(sp,'Cassetta di primo soccorso',t=>{card.rotation.y=-t*1.5;},dentro);
   }
   // cartello verde con croce bianca, sopra la cassetta
   gBox(g,0.3,0.34,0.015,M.verdeSicurezza,0,2.42,-0.085);
@@ -1096,10 +1191,14 @@ function armadioAnte(px,pz,ry,W,H,D,nAnte,seme,nome){
   // Ante accoppiate a libro: ogni coppia copre 2*wa e ha i cardini agli estremi,
   // le due maniglie si incontrano al centro. Insieme chiudono tutta la larghezza.
   const wa=W/nAnte;
+  // ripiano all'altezza dello sguardo: è lì che finisce l'eventuale oggetto-indizio
+  const yDep=Math.round((1.15/hVano))*hVano+0.05;
   for(let c=0;c<nAnte/2;c++){
     const base=-W/2+c*2*wa;
-    anta(g,base,       H/2,wa,H-0.08,D, 1,seme+c*2,  nome||'Anta dell\'armadio');
-    anta(g,base+2*wa,  H/2,wa,H-0.08,D,-1,seme+c*2+1,nome||'Anta dell\'armadio');
+    const dep1=new THREE.Group();dep1.position.set(base+wa/2,yDep,0.02);g.add(dep1);
+    const dep2=new THREE.Group();dep2.position.set(base+wa*1.5,yDep,0.02);g.add(dep2);
+    anta(g,base,       H/2,wa,H-0.08,D, 1,seme+c*2,  nome||'Anta dell\'armadio',dep1);
+    anta(g,base+2*wa,  H/2,wa,H-0.08,D,-1,seme+c*2+1,nome||'Anta dell\'armadio',dep2);
   }
   return g;}
 armadioAnte(-2.64,-0.30,RY.ovest,1.7,2.42,0.5,2,101,'Anta dell\'armadio');
@@ -1235,6 +1334,15 @@ const OSTACOLI=[
 function posValida(x,z){for(const r of ZONE)if(x>=r.x0&&x<=r.x1&&z>=r.z0&&z<=r.z1)return true;return false;}
 function bloccato(x,z){return OSTACOLI.some(r=>x>r.x0&&x<r.x1&&z>r.z0&&z<r.z1);}
 
+// Ogni ingombro a terra proietta la sua ombra di contatto: l'elenco esiste già
+// per le collisioni, quindi il radicamento a terra arriva senza lavoro manuale.
+OSTACOLI.forEach(r=>{
+  const w=r.x1-r.x0, d=r.z1-r.z0;
+  contatto((r.x0+r.x1)/2,(r.z0+r.z1)/2,w+0.34,d+0.34,0.78);
+});
+// e sotto le gambe del tavolone, dove l'ombra è più stretta e più netta
+for(const lx of[-0.5,0.5])for(const lz of[-2.25,-0.75,0.75,2.25])contatto(lx,lz,0.30,0.30,0.62);
+
 /* ---------- movimento FPS ---------- */
 // entrati dalla porta dell'angolo nord-ovest, sguardo verso il fondo della sala
 let yaw=-Math.PI/2-0.5,pitch=0;const tasti={};
@@ -1254,33 +1362,29 @@ canvasEl.addEventListener('click',()=>{
 function usaMirato(){
   const a=G.mirato;if(!a||S.finita)return;
   if(a.porta){apriSerratura();return;}
-  // un indizio già trovato si riapre senza costo: è il fascicolo, non il mobile
-  if(a.indizio){apriEnigma(a.indizio);return;}
+  // È l'OGGETTO a contenere l'indizio, non il mobile: il contenitore si limita
+  // ad aprirsi e si può richiudere senza perdere nulla.
+  if(a.oggetto){S.trovati.add(a.oggetto);apriEnigma(a.oggetto);return;}
   const chiuso=a.target<0.5;
   a.target=chiuso?1:0;
   if(chiuso&&!S.aperti.has(a.uid)){
     S.aperti.add(a.uid);
     S.tempo-=12;                       // cercare costa: è la scarsità del gioco
-    const id=NASCONDIGLI[a.uid];
-    if(id){
-      a.indizio=id;
-      a.nome=OGGETTI_INDIZIO[id];
-      S.trovati.add(id);
-      setTimeout(()=>{if(!S.finita)apriEnigma(id);},650);
+    if(a.contiene){
+      S.trovati.add(a.contiene);
+      splash('Qui dentro c\'è ' + articolo(a.contiene) + ' di ' + nomeMateria(a.contiene) +
+             '. Cliccalo per aprirlo.');
     }
     aggiornaHUD();
   }
 }
-// come si presenta l'indizio dentro il contenitore
-const OGGETTI_INDIZIO={
-  italiano:'Un foglio piegato in quattro',   inglese:'Un libro d\'inglese con un biglietto',
-  storia:'Un volume rilegato con una targa', geografia:'Un fascicolo con una piantina',
-  matematica:'Un foglio a quadretti',        scienze:'Un fascicolo con un disegno',
-  tecnologia:'Un raccoglitore di schemi',    musica:'Un fascicolo con un pentagramma',
-  arte:'Una scatola di materiali d\'arte',   edfisica:'Un raccoglitore di schede',
-  spagnolo:'Un quaderno con la copertina rossa',
-  informatica:'Un promemoria con una password'
+const articolo=id=>{
+  const t=TIPO_OGGETTO[id];
+  return (t==='scatola'?'una scatola':'un '+NOME_OGGETTO[t].toLowerCase());
 };
+function splash(msg){
+  const s=$('splash');s.textContent=msg;s.style.display='block';
+  clearTimeout(splash._t);splash._t=setTimeout(()=>{s.style.display='none';},4200);}
 addEventListener('mousemove',e=>{
   if(document.pointerLockElement===canvasEl&&!G.overlay){
     yaw-=e.movementX*.0024;pitch-=e.movementY*.0024;
@@ -1952,6 +2056,79 @@ const S={
 };
 MATERIE.forEach(m=>{S.enigmi[m.id]=m.gen(RND);});
 
+/* =====================================================================
+   OGGETTI-INDIZIO
+   Dentro il contenitore non c'è una scheda invisibile: c'è un oggetto, con
+   sopra scritto il nome della disciplina. Va cercato con lo sguardo e cliccato;
+   il contenitore si può richiudere senza perderlo.
+   ===================================================================== */
+const TIPO_OGGETTO={
+  italiano:'libro', inglese:'libro', spagnolo:'quaderno', storia:'libro',
+  geografia:'atlante', matematica:'quaderno', scienze:'scatola',
+  tecnologia:'raccoglitore', musica:'fascicolo', arte:'scatola',
+  edfisica:'raccoglitore', informatica:'libro'
+};
+const NOME_OGGETTO={
+  libro:'Libro', quaderno:'Quaderno', atlante:'Atlante',
+  scatola:'Scatola', raccoglitore:'Raccoglitore', fascicolo:'Fascicolo'
+};
+const TINTA_MATERIA={
+  italiano:0x9a4a48, inglese:0x3f679c, spagnolo:0xc08a2a, storia:0x6f5c92,
+  geografia:0x3a8a7a, matematica:0x4c7290, scienze:0x4a8060, tecnologia:0x8f6350,
+  musica:0x7a4a86, arte:0xb0603a, edfisica:0x2f6f5a, informatica:0x2a3646
+};
+// etichetta sul dorso/coperchio: il nome della disciplina, leggibile da vicino
+const _etCache={};
+function texEtichettaMateria(nome,tinta){
+  if(_etCache[nome])return _etCache[nome];
+  const c=mkCanvas(256,64),g=c.getContext('2d');
+  g.fillStyle='#f4f1e8';g.fillRect(0,0,256,64);
+  g.fillStyle='rgba(0,0,0,.10)';g.fillRect(0,58,256,6);
+  g.strokeStyle='#'+('000000'+tinta.toString(16)).slice(-6);g.lineWidth=4;
+  g.strokeRect(5,5,246,54);
+  g.fillStyle='#2a2f36';
+  let fs=30;g.font='bold '+fs+'px Lexend, sans-serif';
+  while(g.measureText(nome.toUpperCase()).width>222&&fs>13){fs--;g.font='bold '+fs+'px Lexend, sans-serif';}
+  g.textAlign='center';g.textBaseline='middle';
+  g.fillText(nome.toUpperCase(),128,33);
+  const t=tex(c);_etCache[nome]=t;return t;}
+
+function costruisciOggetto(tipo,materia,nomeMateria){
+  const g=new THREE.Group();
+  const tinta=TINTA_MATERIA[materia];
+  const matCorpo=new THREE.MeshLambertMaterial({color:tinta});
+  const matEtich=new THREE.MeshLambertMaterial({map:texEtichettaMateria(nomeMateria,tinta)});
+  const matPagine=new THREE.MeshLambertMaterial({color:0xf2eee2});
+  let clic;
+  if(tipo==='libro'||tipo==='atlante'||tipo==='quaderno'){
+    const w=tipo==='atlante'?0.30:(tipo==='quaderno'?0.19:0.23);
+    const h=tipo==='atlante'?0.038:(tipo==='quaderno'?0.014:0.032);
+    const d=tipo==='atlante'?0.22:(tipo==='quaderno'?0.26:0.17);
+    clic=new THREE.Mesh(geoSmussata(w,d,h,0.006),matCorpo);
+    clic.rotation.x=-Math.PI/2;clic.position.y=h/2;clic.castShadow=true;g.add(clic);
+    const pag=new THREE.Mesh(new THREE.BoxGeometry(w-0.014,h*0.62,d-0.014),matPagine);
+    pag.position.y=h/2;g.add(pag);
+    const et=new THREE.Mesh(new THREE.PlaneGeometry(w*0.78,w*0.78/4),matEtich);
+    et.rotation.x=-Math.PI/2;et.position.set(0,h+0.001,0.01);g.add(et);
+  }else if(tipo==='scatola'){
+    const w=0.26,h=0.13,d=0.20;
+    clic=new THREE.Mesh(geoSmussata(w,h,d,0.01),matCorpo);
+    clic.position.y=h/2;clic.castShadow=true;g.add(clic);
+    const cop=new THREE.Mesh(new THREE.BoxGeometry(w+0.012,0.022,d+0.012),
+      new THREE.MeshLambertMaterial({color:0xe8e3d6}));
+    cop.position.y=h+0.006;g.add(cop);
+    const et=new THREE.Mesh(new THREE.PlaneGeometry(w*0.8,w*0.8/4),matEtich);
+    et.rotation.x=-Math.PI/2;et.position.set(0,h+0.018,0);g.add(et);
+  }else{                                   // raccoglitore / fascicolo: in piedi
+    const w=0.24,h=0.30,d=0.055;
+    clic=new THREE.Mesh(geoSmussata(w,h,d,0.008),matCorpo);
+    clic.position.y=h/2;clic.castShadow=true;g.add(clic);
+    const et=new THREE.Mesh(new THREE.PlaneGeometry(w*0.82,w*0.82/4),matEtich);
+    et.position.set(0,h*0.66,d/2+0.002);g.add(et);
+  }
+  return {gruppo:g,clic:clic};
+}
+
 /* ---------- descrizione del nascondiglio, ricavata dalla posizione ---------- */
 function descriviPosizione(mesh){
   const p=mesh.getWorldPosition(new THREE.Vector3());
@@ -1973,13 +2150,24 @@ function descriviPosizione(mesh){
 const NASCONDIGLI={};        // uuid mesh → id materia
 {
   // l'informatica sta sul MacBook di Andrea: è l'unico nascondiglio fisso
-  MACBOOK.indizio='informatica';MACBOOK.fisso=true;
+  MACBOOK.oggetto='informatica';MACBOOK.fisso=true;   // lo schermo è già l'oggetto
   const daNascondere=MATERIE.filter(m=>m.id!=='informatica');
-  const cont=shuffle(CLIC.filter(m=>m.userData.apr&&!m.userData.apr.porta&&m.userData.apr!==MACBOOK),RND);
+  const cont=shuffle(CLIC.filter(m=>m.userData.apr&&!m.userData.apr.porta&&!m.userData.apr.oggetto&&m.userData.apr!==MACBOOK),RND);
   const dove={informatica:'sul MacBook aperto sul tavolone'};
   daNascondere.forEach((m,i)=>{
-    NASCONDIGLI[cont[i].uuid]=m.id;
-    dove[m.id]=descriviPosizione(cont[i]);
+    const mesh=cont[i], apr=mesh.userData.apr;
+    NASCONDIGLI[mesh.uuid]=m.id;
+    dove[m.id]=descriviPosizione(mesh);
+    // l'oggetto vero, dentro il mobile: sarà visibile solo ad anta/cassetto aperti
+    if(apr.deposito){
+      const tipo=TIPO_OGGETTO[m.id];
+      const o=costruisciOggetto(tipo,m.id,m.nome);
+      apr.deposito.add(o.gruppo);
+      o.clic.userData.apr={nome:NOME_OGGETTO[tipo]+' di '+m.nome,oggetto:m.id,
+        t:0,target:0,applica:()=>{},uid:o.clic.uuid};
+      CLIC.push(o.clic);
+      apr.contiene=m.id;
+    }
   });
   // catena circolare: ogni materia rimanda al nascondiglio della successiva
   const ordine=shuffle(MATERIE.map(m=>m.id),RND);
@@ -1997,7 +2185,7 @@ function aggiornaHUD(){
   $('tempoVal').textContent=fmtT(Math.max(0,S.tempo));
   $('tempo').classList.toggle('poco',S.tempo<180);
   $('cifreVal').textContent=Object.keys(S.cifre).length+'/'+MATERIE.length;
-  $('apertiVal').textContent=S.aperti.size+'/'+CLIC.filter(m=>m.userData.apr&&!m.userData.apr.porta).length;
+  $('apertiVal').textContent=S.aperti.size+'/'+CLIC.filter(m=>m.userData.apr&&!m.userData.apr.porta&&!m.userData.apr.oggetto).length;
 }
 function nomeMateria(id){return MATERIE.find(m=>m.id===id).nome;}
 
@@ -2170,7 +2358,7 @@ function animate(){
     const h=$('hint');
     $('mirino').classList.toggle('attivo',!!a);
     if(a){h.style.display='block';
-      const az=a.porta?'inserisci il codice':a.indizio?'esamina':(a.target>0.5?'chiudi':'apri');
+      const az=a.porta?'inserisci il codice':a.oggetto?'aprilo':(a.target>0.5?'chiudi':'apri');
       h.textContent=a.nome+' — '+az+(G.touch?' (tocca APRI)':' [clic o Invio]');
     }else h.style.display='none';
   }

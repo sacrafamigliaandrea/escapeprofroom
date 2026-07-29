@@ -2,7 +2,9 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Sala Professori 3D — Scuola Sacra Famiglia</title>
 <link rel="icon" href="logo.svg" />
 <link rel="apple-touch-icon" href="logo.png" />
@@ -16,8 +18,12 @@
   --head:'Lexend',sans-serif; --body:'Atkinson Hyperlegible',sans-serif;
 }
 *{margin:0;box-sizing:border-box}
-html,body{height:100%;overflow:hidden;background:#000;font-family:var(--body);font-size:18px}
-#c{position:fixed;inset:0;display:block}
+html,body{height:100%;overflow:hidden;background:#000;font-family:var(--body);font-size:18px;
+  overscroll-behavior:none;-webkit-text-size-adjust:100%}
+#c{position:fixed;inset:0;display:block;touch-action:none}
+/* iPad: niente selezione del testo trascinando, niente lente di ingrandimento */
+html.touch{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html.touch .card{-webkit-user-select:text;user-select:text}
 
 /* ---------- HUD ---------- */
 #mirino{position:fixed;left:50%;top:50%;width:14px;height:14px;transform:translate(-50%,-50%);z-index:8;pointer-events:none;display:none}
@@ -186,13 +192,38 @@ input.txt{width:260px}
 #intro .sotto{font-family:var(--head);font-size:15px;color:var(--muted);margin-bottom:16px}
 
 /* ---------- touch ---------- */
-#stickBase{position:fixed;left:26px;bottom:96px;width:120px;height:120px;border-radius:50%;z-index:9;display:none;
-  background:rgba(255,255,255,.10);border:2px solid rgba(255,255,255,.35)}
-#stickNub{position:absolute;left:50%;top:50%;width:52px;height:52px;border-radius:50%;transform:translate(-50%,-50%);
+/* Il joystick nasce dove appoggi il dito: la base viene posizionata al tocco. */
+#stickBase{position:fixed;left:26px;bottom:96px;width:132px;height:132px;border-radius:50%;z-index:9;display:none;
+  background:rgba(255,255,255,.10);border:2px solid rgba(255,255,255,.35);pointer-events:none}
+#stickNub{position:absolute;left:50%;top:50%;width:58px;height:58px;border-radius:50%;margin:-29px 0 0 -29px;
   background:rgba(255,255,255,.55)}
-#btnTouch{position:fixed;right:26px;bottom:110px;z-index:9;display:none;font-family:var(--head);font-weight:700;
-  font-size:15px;color:#fff;background:rgba(18,62,144,.9);border:2px solid rgba(255,255,255,.5);
-  border-radius:50%;width:92px;height:92px;letter-spacing:.5px}
+#btnTouch{position:fixed;right:calc(26px + env(safe-area-inset-right));
+  bottom:calc(104px + env(safe-area-inset-bottom));z-index:9;display:none;
+  font-family:var(--head);font-weight:700;font-size:15px;color:#fff;background:rgba(18,62,144,.9);
+  border:2px solid rgba(255,255,255,.55);border-radius:50%;width:96px;height:96px;letter-spacing:.5px;
+  touch-action:manipulation}
+#btnTouch:disabled{opacity:.30}
+/* barre e pulsanti si spostano dentro l'area sicura, sotto la fotocamera */
+html.touch #barra{top:calc(10px + env(safe-area-inset-top))}
+html.touch #btnAiuto{top:calc(10px + env(safe-area-inset-top));right:calc(14px + env(safe-area-inset-right))}
+html.touch #btnTacc{top:calc(56px + env(safe-area-inset-top));right:calc(14px + env(safe-area-inset-right));
+  padding:11px 18px;font-size:15px}
+html.touch #brandPill{left:calc(14px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom))}
+html.touch #seedBox{right:calc(14px + env(safe-area-inset-right));bottom:calc(14px + env(safe-area-inset-bottom))}
+html.touch #hint{bottom:calc(208px + env(safe-area-inset-bottom));font-size:17px;padding:11px 22px}
+html.touch #mirino{display:none}          /* su iPad si punta col dito, non col mirino */
+/* pannelli: su tablet devono poter scorrere e avere bersagli grandi */
+html.touch .overlay{align-items:flex-start;padding:calc(14px + env(safe-area-inset-top)) 12px 14px}
+html.touch .card{max-height:calc(100vh - 40px);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:26px 24px 22px}
+html.touch .opt,html.touch .tok{min-height:52px;font-size:17px}
+html.touch button.azione{min-height:54px;font-size:17.5px;padding:14px 26px}
+html.touch input.num,html.touch input.txt{min-height:52px;font-size:19px}
+html.touch .slider{height:34px}
+html.touch .solo-mouse{display:none!important}
+html.touch div.solo-touch{display:grid!important}
+html.touch span.solo-touch{display:inline!important}
+html.touch .kbd{display:none}
 </style>
 </head>
 <body>
@@ -256,7 +287,9 @@ input.txt{width:260px}
     Ogni indizio che risolvi, però, lascia una nota a matita che dice dove cercare il prossimo:
     seguire le note costa molto meno tempo che aprire ogni cassetto.</p>
     <p style="font-size:15.5px;color:var(--muted)">Comandi e regole sono sempre a portata di mano:
-    il pulsante <b>i</b> in alto a destra.</p>
+    il pulsante <b>i</b> in alto a destra.<span class="solo-touch" style="display:none"><br>
+    Su iPad: <b>dito sinistro</b> per camminare, <b>dito destro</b> per guardarti intorno,
+    <b>tocca</b> per aprire.</span></p>
     <div class="btnrow"><button class="azione" id="btnStart" type="button">Entra nella sala</button></div>
   </div>
 </div>
@@ -325,7 +358,15 @@ input.txt{width:260px}
   <div class="card largo">
     <h2>Come si gioca</h2>
     <h3 class="sez">I comandi</h3>
-    <div class="comandi">
+    <div class="comandi solo-touch" style="display:none">
+      <div><b>Dito sinistro</b> — appoggialo sulla metà sinistra: compare il joystick, spingi per camminare.</div>
+      <div><b>Dito destro</b> — trascina sulla metà destra per guardarti intorno.</div>
+      <div><b>Tocca</b> un cassetto, un'anta o un oggetto per aprirlo.</div>
+      <div>In alternativa usa il pulsante rotondo <b>APRI</b> in basso a destra.</div>
+      <div>Il pulsante <b>Taccuino</b> in alto a destra tiene il conto delle cifre.</div>
+      <div>Meglio in <b>orizzontale</b>, e con l'iPad appoggiato: si gioca con due dita.</div>
+    </div>
+    <div class="comandi solo-mouse">
       <div><span><span class="kbd">W</span><span class="kbd">A</span><span class="kbd">S</span><span class="kbd">D</span></span><span>o frecce — cammina</span></div>
       <div><span class="kbd">Mouse</span><span>— guarda intorno</span></div>
       <div><span><span class="kbd">Clic</span> o <span class="kbd">Invio</span></span><span>— apri cassetti e ante</span></div>
@@ -387,8 +428,13 @@ const $=id=>document.getElementById(id);
 
 /* ---------- renderer / scena / camera ---------- */
 const canvasEl=$('c');
-const renderer=new THREE.WebGLRenderer({canvas:canvasEl,antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+// Su iPad il pixel ratio pieno (2 o 3) quadruplica i pixel da disegnare: si
+// paga in fluidità senza guadagno percepibile su uno schermo tenuto a 40 cm.
+const _tocco = matchMedia('(pointer:coarse)').matches
+            || ('ontouchstart' in window && navigator.maxTouchPoints>0)
+            || location.search.includes('touch=1');
+const renderer=new THREE.WebGLRenderer({canvas:canvasEl,antialias:!_tocco,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,_tocco?1.5:2));
 renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -409,7 +455,7 @@ scene.add(new THREE.HemisphereLight(0x5a6673,0x241f1a,0.18));
 // la luce da fuori è malata: bassa, radente, color cenere
 const sole=new THREE.DirectionalLight(0xc9a06a,0.34);
 sole.position.set(9,3.2,-2); sole.target.position.set(-1.5,0,0);
-sole.castShadow=true; sole.shadow.mapSize.set(2048,2048);
+sole.castShadow=true; sole.shadow.mapSize.set(_tocco?1024:2048,_tocco?1024:2048);
 sole.shadow.camera.left=-7; sole.shadow.camera.right=7;
 sole.shadow.camera.top=7;  sole.shadow.camera.bottom=-7;
 sole.shadow.bias=-0.0008;
@@ -1333,7 +1379,14 @@ box(0.4,1.6,0.42,M.nero,-2.66,0.8,4.45);        // colonna scura all'angolo sud-
 /* =====================================================================
    SISTEMA DI GIOCO
    ===================================================================== */
-const G={gioco:false,overlay:true,mirato:null,touch:('ontouchstart'in window)};
+/* Rilevamento touch: `ontouchstart` da solo non basta (falso positivo su alcuni
+   desktop, falso negativo su iPadOS che si dichiara desktop). `?touch=1` forza
+   i comandi touch anche da computer, per provarli senza avere l'iPad in mano. */
+const TOUCH = location.search.includes('touch=1')
+           || matchMedia('(pointer:coarse)').matches
+           || ('ontouchstart' in window && navigator.maxTouchPoints>0);
+if(TOUCH)document.documentElement.classList.add('touch');
+const G={gioco:false,overlay:true,mirato:null,touch:TOUCH};
 
 /* ---------- zone e ostacoli ---------- */
 const ZONE=[{x0:-2.55,x1:2.55,z0:-4.35,z1:4.35}];
@@ -1386,9 +1439,10 @@ addEventListener('keydown',e=>{
 });
 addEventListener('keyup',e=>{tasti[e.key.toLowerCase()]=false;});
 canvasEl.addEventListener('click',()=>{
+  if(G.touch)return;                     // su iPad si interagisce col tap, non col click
   if(!G.gioco||G.overlay)return;
   // primo clic: riprende il pointer lock; poi il clic apre ciò che si sta mirando
-  if(!G.touch&&document.pointerLockElement!==canvasEl){canvasEl.requestPointerLock();return;}
+  if(document.pointerLockElement!==canvasEl){canvasEl.requestPointerLock();return;}
   usaMirato();
 });
 function usaMirato(){
@@ -1423,36 +1477,63 @@ addEventListener('mousemove',e=>{
     pitch=Math.max(-1.2,Math.min(1.2,pitch));}
 });
 
-/* ---------- comandi touch ---------- */
-const stick={idT:null,cx:0,cy:0,dx:0,dy:0};
-let lookId=null,lookX=0,lookY=0;
+/* ---------- comandi touch (iPad) ----------
+   Su iOS non esistono né Pointer Lock né tastiera: servono un joystick
+   virtuale a sinistra, il trascinamento a destra per guardarsi intorno e il
+   tap secco per interagire (il pulsante APRI resta come alternativa). */
+const joy={id:null,cx:0,cy:0,dx:0,dy:0};
+const look={id:null,x:0,y:0,mosso:false};
+// La larghezza va presa dal canvas: `innerWidth` può valere 0 in certi contesti
+// (anteprime, webview incorporate) e la soglia del joystick collasserebbe.
+const larghezzaVista=()=>canvasEl.clientWidth||innerWidth||
+  document.documentElement.clientWidth||1024;
 if(G.touch){
+  const base=$('stickBase'), nub=$('stickNub'), R=54;
+  const inGioco=()=>G.gioco&&!G.overlay&&!S.finita;
   canvasEl.addEventListener('touchstart',e=>{
-    if(!G.gioco||G.overlay)return;
+    if(!inGioco())return;
     for(const t of e.changedTouches){
-      if(t.clientX<innerWidth*0.42&&t.clientY>innerHeight*0.45&&stick.idT===null){
-        stick.idT=t.identifier;stick.cx=t.clientX;stick.cy=t.clientY;stick.dx=0;stick.dy=0;
-        const b=$('stickBase');b.style.left=(t.clientX-60)+'px';b.style.top=(t.clientY-60)+'px';b.style.bottom='auto';
-      }else if(lookId===null){lookId=t.identifier;lookX=t.clientX;lookY=t.clientY;}
-    }e.preventDefault();},{passive:false});
+      if(t.clientX<larghezzaVista()*0.45&&joy.id===null){    // metà sinistra: joystick
+        joy.id=t.identifier;joy.cx=t.clientX;joy.cy=t.clientY;joy.dx=joy.dy=0;
+        base.style.left=(t.clientX-66)+'px';base.style.top=(t.clientY-66)+'px';
+        base.style.bottom='auto';base.style.display='block';
+        nub.style.transform='translate(0,0)';
+      }else if(look.id===null){                              // metà destra: sguardo
+        look.id=t.identifier;look.x=t.clientX;look.y=t.clientY;look.mosso=false;
+      }
+    }
+    e.preventDefault();},{passive:false});
   canvasEl.addEventListener('touchmove',e=>{
     for(const t of e.changedTouches){
-      if(t.identifier===stick.idT){
-        stick.dx=Math.max(-1,Math.min(1,(t.clientX-stick.cx)/48));
-        stick.dy=Math.max(-1,Math.min(1,(t.clientY-stick.cy)/48));
-        $('stickNub').style.transform='translate(calc(-50% + '+(stick.dx*30)+'px),calc(-50% + '+(stick.dy*30)+'px))';
-      }else if(t.identifier===lookId){
-        yaw-=(t.clientX-lookX)*.005;pitch-=(t.clientY-lookY)*.005;
+      if(t.identifier===joy.id){
+        let dx=t.clientX-joy.cx, dy=t.clientY-joy.cy;
+        const d=Math.hypot(dx,dy); if(d>R){dx*=R/d;dy*=R/d;}
+        joy.dx=dx/R; joy.dy=dy/R;
+        nub.style.transform='translate('+dx.toFixed(0)+'px,'+dy.toFixed(0)+'px)';
+      }else if(t.identifier===look.id){
+        yaw   -= (t.clientX-look.x)*0.0055;
+        pitch -= (t.clientY-look.y)*0.0055;
         pitch=Math.max(-1.2,Math.min(1.2,pitch));
-        lookX=t.clientX;lookY=t.clientY;}
-    }e.preventDefault();},{passive:false});
-  canvasEl.addEventListener('touchend',e=>{
+        if(Math.abs(t.clientX-look.x)+Math.abs(t.clientY-look.y)>6)look.mosso=true;
+        look.x=t.clientX;look.y=t.clientY;
+      }
+    }
+    e.preventDefault();},{passive:false});
+  const fineTocco=e=>{
     for(const t of e.changedTouches){
-      if(t.identifier===stick.idT){stick.idT=null;stick.dx=0;stick.dy=0;
-        $('stickNub').style.transform='translate(-50%,-50%)';}
-      if(t.identifier===lookId)lookId=null;}
-  });
-  $('btnTouch').addEventListener('click',()=>{if(G.gioco&&!G.overlay)usaMirato();});
+      if(t.identifier===joy.id){
+        joy.id=null;joy.dx=joy.dy=0;base.style.display='none';
+      }else if(t.identifier===look.id){
+        // tap secco (senza trascinamento) su un oggetto a portata: interagisci
+        if(!look.mosso&&G.mirato&&inGioco())usaMirato();
+        look.id=null;
+      }
+    }};
+  canvasEl.addEventListener('touchend',fineTocco);
+  canvasEl.addEventListener('touchcancel',fineTocco);
+  $('btnTouch').addEventListener('click',e=>{
+    e.preventDefault();
+    if(G.mirato&&G.gioco&&!G.overlay&&!S.finita)usaMirato();});
 }
 
 /* ---------- overlay ---------- */
@@ -1469,13 +1550,17 @@ addEventListener('keydown',e=>{
 $('btnStart').addEventListener('click',()=>{
   $('intro').style.display='none';G.overlay=false;G.gioco=true;
   $('btnAiuto').style.display='block';$('brandPill').style.display='flex';
-  $('mirino').style.display='block';$('barra').style.display='flex';
+  $('barra').style.display='flex';
   $('btnTacc').style.display='block';$('vign').style.display='block';
   avviaMusica();
   $('seedBox').style.display='block';$('seedBox').textContent='partita '+SEED;
   S.avviata=true;aggiornaHUD();
-  if(G.touch){$('stickBase').style.display='block';$('btnTouch').style.display='block';}
-  else canvasEl.requestPointerLock();
+  if(G.touch){
+    $('btnTouch').style.display='block';   // la base del joystick nasce dove appoggi il dito
+  }else{
+    $('mirino').style.display='block';
+    canvasEl.requestPointerLock();
+  }
 });
 addEventListener('keydown',e=>{
   if(e.key.toLowerCase()==='t'&&G.gioco&&!G.overlay)apriTaccuino();
@@ -2379,9 +2464,9 @@ function animate(){
     if(tasti['s']||tasti['arrowdown']) nuova.addScaledVector(dir,-v);
     if(tasti['a']||tasti['arrowleft']) nuova.addScaledVector(destra,-v);
     if(tasti['d']||tasti['arrowright'])nuova.addScaledVector(destra, v);
-    if(G.touch&&stick.idT!==null){
-      nuova.addScaledVector(dir,-stick.dy*v);
-      nuova.addScaledVector(destra,stick.dx*v);}
+    if(G.touch&&joy.id!==null){          // joystick: su = avanti, giù = indietro
+      nuova.addScaledVector(dir,-joy.dy*v);
+      nuova.addScaledVector(destra,joy.dx*v);}
     const ok=(x,z)=>posValida(x,z)&&!bloccato(x,z);
     if(ok(nuova.x,nuova.z))camera.position.copy(nuova);
     else if(ok(nuova.x,camera.position.z))camera.position.x=nuova.x;
